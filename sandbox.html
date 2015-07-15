@@ -10,34 +10,39 @@
     
 <script type="text/javascript">
 
-var data = ['a', 'b', 'c'];
-var width = 400,
-    height = 40;
-    
-function chart(selection) {
-    selection.each(function(data) {
-        // Select and bind the svg element.
-        var div = d3.select(this).attr('class', 'data-item'),
-            svg = div.selectAll('svg').data([data]),
-            svgEnter = svg.enter();
+//Width and height of the figure
+    var width = 600, height = 150;
 
-        // Append the svg and the rectangle on enter.
-        svgEnter.append('svg')
-            .attr('width', width)
-            .attr('height', height)
-            .append('rect')
-            .attr('width', width)
-            .attr('height', height)
-            .attr('fill', 'blue');
-    });
-}
+//Create the svg element
+
+    var svg = d3.select('#chart').append('svg')
+        .attr('width', width)
+        .attr('height', height);
     
-d3.select('#chart').selectAll('div.data-item')
-    .data(data)
-    .enter()
-    .append('div')
-    .attr('class', 'data-item')
-    .call(chart);
+    //Append a grey circle in the middle
+    var circle = svg.append('circle')
+        .attr('cx', width / 2)
+        .attr('cy', height / 2)
+        .attr('r', 30)
+        .attr('fill', '#555');
+
+        //Moves the circle on drag
+    function dragListener(d) {
+        //Get the current position of the circle
+        var cx = +d3.select(this).attr('cx'),
+            cy = +d3.select(this).attr('cy');
+        
+        //Set the new position of the circle
+        d3.select(this)
+            .attr('cx', cx + d3.event.dx)
+            .attr('cy', cy + d3.event.dy);
+    }
+    
+    var drag = d3.behavior.drag().on('drag', dragListener);
+
+    circle.call(drag);
+
+
 
 
     
