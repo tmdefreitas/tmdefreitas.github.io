@@ -15,7 +15,7 @@ body {
 
 .site-subtitle {
     font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 300;
     text-align: center;
     font-style: italic;
@@ -70,7 +70,7 @@ body {
 
 /* ------- Footer ----------- */
 .footer-divider {
-    width: 60%;
+    width: 640px;
     color: gray;   
 }
 
@@ -81,11 +81,12 @@ footer {
 
 footer ul {
     list-style: none;
+    padding: 0;
 }
 
 footer ul li { 
     display: inline;
-    margin 0 10px;
+    margin: 0 14px;
 }
 
 .footer-link a {
@@ -99,5 +100,8 @@ footer ul li {
 }
 
 .icon {
-    height: 15px;
+    height: 14px;
+    vertical-align: middle;
+    padding-bottom: 2px;
+}
 }
