@@ -4,6 +4,7 @@ console.log("Planets visualization");
 
 //Epoch Info, J2000
 var EPOCH_D0 = 2451545;
+var CURRENT_DAY = 0;
 
 //Gravitational constant of the sun src: http://ssd.jpl.nasa.gov/?constants
 var GM_SUN = 1.32712440018e20;
@@ -14,8 +15,12 @@ var AU = 149597870700;
 var svgWidth = 800;
 var svgHeight = 800;
 var Background = "#000";
+var AUtoPX = 30; //How big one AU is, in pixels
+var DAYS_PER_SECOND = 20;
+var FRAME_RATE = 1000 / 60; //60 frames per second
 
-
+//Colors for each planet in the visualization. Eventually Replace with icons?
+var planetaryColors = ["#bdbdbd", "#ffeda0", "#1f78b4", "#e31a1c", "#fff",  "#fff", "#fff", "#fff", "#fff"];
 
 //See http://www.stjarnhimlen.se/comp/tutorial.html for an explanation of parameters
 
@@ -165,23 +170,82 @@ function zeroTo2PI(angle){
     
 }
 
-var solar_system;
 
-d3.tsv("/solar_system.tsv", function(d){
-    return { Planet : d.Planet,
-             orbit  : new Orbit(+d.a, +d.e, +d.i, +d.O, +d.w, +d.L, +d.da, +d.de, +d.di, +d.dO, +d.dw, +d.dL)};
-    }, function(data){
-        solar_system = data;
-});
 
 var svg = d3.select("#universe")
             .append("svg")
             .attr("height", svgHeight)
             .attr("width", svgWidth);
 
+//Background
 svg.append("rect")
     .attr("width", "100%")
     .attr("height", "100%")
     .attr("fill", "black");
+
+//The Sun
+svg.append("image")  
+    .attr("x", svgWidth/2 - 15) //Center the image by offsetting it
+    .attr("y", svgHeight/2- 15)
+    .attr("height", 30)
+    .attr("width", 30)
+    .attr("xlink:href","/data/planets/sun.svg");
+
+var solar_system;
+
+var myvar = d3.tsv("/data/planets/solar_system.tsv", function(d){
+    return { Planet : d.Planet,
+             orbit  : new Orbit(+d.a, +d.e, +d.i, +d.O, +d.w, +d.L, +d.da, +d.de, +d.di, +d.dO, +d.dw, +d.dL)};
+    }, function(data){
+    //For debugging, don't rely on this value
+    solar_system = data;
+    createPlanets(data);
+});
+
+function zoomed() {
+  svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+}
+
+function createPlanets(data){
+    var zoom = d3.behavior.zoom();
+    zoom.scaleExtent([0.25, 2]).on("zoom", zoomed);
+    
+    var circle = svg.selectAll("circle")
+        .data(data)
+        .enter().append("circle")
+        .attr("cx", function(d) { return svgWidth/2 + AUtoPX*d.orbit.heliocentric_XYZ()[0]})
+        .attr("cy", function(d) { return svgHeight/2 + AUtoPX*d.orbit.heliocentric_XYZ()[1]})
+        .attr("r", 5)
+        .attr("fill", function(d, i) { return planetaryColors[i]});
+
+    var text = circle.append("svg:title")
+    .text(function (d) { return d.Planet;}); 
+       
+    
+    var Days_elapsed  = 0;
+    
+    //d3.timer(updatePlanets);
+    setInterval(updatePlanets, FRAME_RATE);
+    
+    function updatePlanets(){
+        Days_elapsed += DAYS_PER_SECOND/FRAME_RATE;
+        
+        //Update each circle with new position
+        var t_circle = svg.selectAll("circle")
+                            .data(data)
+                            .attr("cx", function(d) { return svgWidth/2 + AUtoPX*d.orbit.project_orbit(Days_elapsed).heliocentric_XYZ()[0]})
+                            .attr("cy", function(d) { return svgHeight/2 + AUtoPX*d.orbit.project_orbit(Days_elapsed).heliocentric_XYZ()[1]});
+                            
+        
+        return false;
+
+    }
+
+}
+
+
+
+
+    
     
         
