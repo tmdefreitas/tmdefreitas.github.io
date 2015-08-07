@@ -9,7 +9,7 @@ def toRadiansFromDegrees(deg):
 	return (deg / 180.0) * pi
 
 def toRadiansFromArcSec(asec):
-	return (asec * 3600.0 / 180.0) * pi
+	return (asec / 3600.0 / 360.0) * 2 * pi
 
 def convert_line(planet):
 	items = planet.split('\t')
