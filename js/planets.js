@@ -20,7 +20,7 @@ var DAYS_PER_SECOND = 20;
 var FRAME_RATE = 1000 / 60; //60 frames per second
 
 //Colors for each planet in the visualization. Eventually Replace with icons?
-var planetaryColors = ["#bdbdbd", "#ffeda0", "#1f78b4", "#e31a1c", "#fff",  "#fff", "#fff", "#fff", "#fff"];
+var planetaryColors = ["#bdbdbd", "#ffeda0", "#1f78b4", "#e31a1c", "#fc4e2a",  "#ffffb3", "#1f78b4", "#fff", "#fff"];
 
 //See http://www.stjarnhimlen.se/comp/tutorial.html for an explanation of parameters
 
